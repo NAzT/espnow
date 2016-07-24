@@ -7,7 +7,12 @@ extern "C" {
 
 #define WIFI_DEFAULT_CHANNEL 9
 // {0x18,0xFE,0x34,0xEE,0xCA,0xED} = bare
-uint8_t mac[] = {0x5C,0xCF,0x7F,0x9,0xCC,0x35};
+uint8_t mac[] = {0x5C, 0xCF, 0x7F, 0x9, 0xCC, 0x35};
+uint16_t counter = 0;
+#include <Ticker.h>
+
+Ticker ticker;
+
 
 void printMacAddress(uint8_t* macaddr) {
   Serial.print("{");
@@ -44,23 +49,10 @@ void setup() {
   Serial.println("SET ROLE SLAVE");
   esp_now_set_self_role(ESP_NOW_ROLE_SLAVE);
   esp_now_register_recv_cb([](uint8_t *macaddr, uint8_t *data, uint8_t len) {
-    Serial.println("recv_cb");
-
-    Serial.print("mac address: ");
-    printMacAddress(macaddr);
-
-    Serial.print("data: ");
-    for (int i = 0; i < len; i++) {
-      Serial.print(" 0x");
-      Serial.print(data[i], HEX);
-    }
-    
-    Serial.print("data: ");
-    Serial.println(data[0]);
-    Serial.println("==============");
+    counter++;
     digitalWrite(LED_BUILTIN, !data[0]);
   });
-  
+
   esp_now_register_send_cb([](uint8_t* macaddr, uint8_t status) {
     Serial.println("send_cb");
 
@@ -72,6 +64,14 @@ void setup() {
 
   int res = esp_now_add_peer(mac, (uint8_t)ESP_NOW_ROLE_CONTROLLER, (uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);
 
+  if (res) {
+
+  }
+  Serial.println("BEGIN TICKER");
+  ticker.attach_ms(1000, [&]() {
+    Serial.printf("Counter = %lu\r\n", counter);
+    counter = 0;
+  });
   //  esp_now_unregister_recv_cb();
   //  esp_now_deinit();
 }
