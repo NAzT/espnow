@@ -1,3 +1,6 @@
+/*
+  Special thanks to https://github.com/cho45/esp8266-esp-now-sample/blob/master/slave/src/main.cpp
+*/
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 extern "C" {
@@ -79,4 +82,3 @@ void setup() {
 void loop() {
   yield();
 }
-
