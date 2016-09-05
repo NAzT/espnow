@@ -14,7 +14,8 @@ extern "C" {
 ESPert_OLED oled;
 CMMC_Interval senderInterval;
 CMMC_Interval counterInterval;
-uint16_t msg_sent_counter = 0;
+uint16_t msg_sent_cb_counter = 0;
+uint16_t msg_sent_timer_counter = 0;
 
 #define RESET_TIMER(_var) (_var = 0)
 #define TIMER_COUNT(_var) (_var = _var+1)
@@ -46,7 +47,7 @@ void printMacAddress(uint8_t* macaddr) {
 }
 
 static bool _status;
-static uint8_t message[] = { 0x00 };
+static uint8_t message[] = { };
 
 void setup() {
   _status = false;
@@ -102,7 +103,7 @@ void setup() {
   });
 
   esp_now_register_send_cb([](uint8_t* macaddr, uint8_t status) {
-    TIMER_COUNT(msg_sent_counter);
+    TIMER_COUNT(msg_sent_cb_counter);
     /*
     Serial.println("send_cb");
     Serial.print("mac address: ");
@@ -124,21 +125,31 @@ void setup() {
 //  esp_now_deinit();
 }
 
+uint16_t _local_timer = 0;
 void loop() {
   senderInterval.every_ms(1, []() {
     message[0] = _status;
     _status=!_status;
-    // esp_now_send(neo_slave, message, sizeof(message));
     // esp_now_send(bare_up_slave, message, sizeof(message));
+
+
+
     esp_now_send(NULL, message, 1);
-    // digitalWrite(LED_BUILTIN, _status);
+    TIMER_COUNT(msg_sent_timer_counter);
+    TIMER_COUNT(_local_timer);
+
+    if (_local_timer == 1000) {
+      oled.clear();
+      oled.printf("TIMER SENT = %lu/s\r\n\r\n", msg_sent_timer_counter);
+      oled.printf("MSG CB SENT = %lu/s\r\n", msg_sent_cb_counter);
+      RESET_TIMER(msg_sent_cb_counter);
+      RESET_TIMER(msg_sent_timer_counter);
+      RESET_TIMER(_local_timer);
+      oled.update();
+    }
   });
 
-  counterInterval.every_ms(1000, []() {
-    oled.clear();
-    oled.printf("MSG SENT = %lu/s", msg_sent_counter);
-    RESET_TIMER(msg_sent_counter);
-    oled.update();
-  });
+  // counterInterval.every_ms(1000, []() {
+  // });
 
 }
