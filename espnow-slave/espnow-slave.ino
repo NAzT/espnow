@@ -9,8 +9,9 @@ extern "C" {
 }
 
 #define WIFI_DEFAULT_CHANNEL 9
-// {0x18,0xFE,0x34,0xEE,0xCA,0xED} = bare
-uint8_t mac[] = {0x5C, 0xCF, 0x7F, 0x9, 0xCC, 0x35};
+// neopixel = {0x18,0xFE,0x34,0xEE,0xCA,0xED} = 
+
+uint8_t controller001[] = {0x18,0xFE,0x34,0xEE,0xCA,0xED};
 uint16_t counter = 0;
 #include <Ticker.h>
 
@@ -65,7 +66,7 @@ void setup() {
     Serial.print("status = "); Serial.println(status);
   });
 
-  int res = esp_now_add_peer(mac, (uint8_t)ESP_NOW_ROLE_CONTROLLER, (uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);
+  int res = esp_now_add_peer(controller001, (uint8_t)ESP_NOW_ROLE_CONTROLLER, (uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);
 
   if (res) {
 
