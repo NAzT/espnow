@@ -6,14 +6,12 @@ extern "C" {
 }
 
 #define WIFI_DEFAULT_CHANNEL 9
-
-
 // neo = {0x1A,0xFE,0x34,0xEE,0xCA,0xED}
 
 //uint8_t neo_slave[] = {0x1A,0xFE,0x34,0xEE,0xCA,0xED};
 //uint8_t bare_up_slave[] = {0x5E,0xCF,0x7F,0x9,0x98,0x4E};
 //uint8_t bare_no_up_nodht[] = {0x1A,0xFE,0x34,0xDA,0xEA,0xD0};
-//uint8_t no[2][6]= { 
+//uint8_t no[2][6]= {
 //    {0x1A,0xFE,0x34,0xDA,0xEF,0x5F},
 //    {0x1A,0xFE,0x34,0xDB,0x32,0xEB},
 // };
@@ -78,9 +76,9 @@ void setup() {
   });
 
   int res = esp_now_add_peer(no1, (uint8_t)ESP_NOW_ROLE_SLAVE,(uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);
-  int res2 = esp_now_add_peer(no2, (uint8_t)ESP_NOW_ROLE_SLAVE,(uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);  
-//  int res2 = esp_now_add_peer(no[1], (uint8_t)ESP_NOW_ROLE_SLAVE,(uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);  
-  
+  int res2 = esp_now_add_peer(no2, (uint8_t)ESP_NOW_ROLE_SLAVE,(uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);
+//  int res2 = esp_now_add_peer(no[1], (uint8_t)ESP_NOW_ROLE_SLAVE,(uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);
+
 //  res = esp_now_add_peer(bare_up_slave, (uint8_t)ESP_NOW_ROLE_SLAVE,(uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);
 //  res = esp_now_add_peer(bare_no_up_nodht, (uint8_t)ESP_NOW_ROLE_SLAVE,(uint8_t)WIFI_DEFAULT_CHANNEL, NULL, 0);
 
@@ -101,4 +99,3 @@ void loop() {
   digitalWrite(LED_BUILTIN, _status);
   delay(200);
 }
-
